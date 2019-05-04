@@ -5,6 +5,8 @@
 
 **2.** 0.46:1.05 => Extraction of features. Then starts to metch feature points.
 
+**3.** 1.05:1.30 => Matches feature points across frames.
+
 ## Work done (amount of code written and its status)
 
 ## Other stuff (Work to be done, some issues or anything else)
