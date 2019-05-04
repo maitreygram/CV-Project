@@ -3,15 +3,14 @@ import cv2
 from matplotlib import pyplot as plt
 import pygame
 from frame import *
+from constants import *
 
-X = 500
-Y = 500
 pygame.init()
-screen = pygame.display.set_mode([X,Y])
+screen = pygame.display.set_mode([W,H])
 
 def process_frame(frame):
 	
-	frame = cv2.resize(frame, (X, Y))
+	frame = cv2.resize(frame, (W, H))
 	frame_1 = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 	corners = cv2.goodFeaturesToTrack(frame_1,300,0.01,10)
 	corners = np.int0(corners)
@@ -34,7 +33,7 @@ def process_frame(frame):
 
 	return
 	
-cap = cv2.VideoCapture('../drive2.mp4')  
+cap = cv2.VideoCapture('drive.mp4')  
 
 # KeyFrames = []
 current_frames = []
@@ -44,7 +43,7 @@ while cap.isOpened():
 	if (ret == False):
 		break
 
-	frame = cv2.resize(frame, (X, Y))
+	frame = cv2.resize(frame, (W, H))
 	frame = Frame(frame)
 	current_frames.append(frame)
 
@@ -93,20 +92,16 @@ while cap.isOpened():
 	
 
 # When everything done, release the capture
-print('a')
-
 # extract ORB features
 
-for frame in frame_init:
-	orb = cv2.ORB_create()
-	frame_1 = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-	corners = cv2.goodFeaturesToTrack(frame_1,300,0.01,10)
-	keypoint_object = []
-	for i in corners:
-		u,v = i.ravel()
-		keypoint_object.append(cv2.KeyPoint(u,v, _size=20))
+# for frame in frame_init:
+# 	orb = cv2.ORB_create()
+# 	frame_1 = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+# 	corners = cv2.goodFeaturesToTrack(frame_1,300,0.01,10)
+# 	keypoint_object = []
+# 	for i in corners:
+# 		u,v = i.ravel()
+# 		keypoint_object.append(cv2.KeyPoint(u,v, _size=20))
 
-	kp, des = orb.compute(frame, keypoint_object)
-	# Extraction and 
-	
-
+# 	kp, des = orb.compute(frame, keypoint_object)
+# 	# Extraction and 

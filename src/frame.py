@@ -1,5 +1,6 @@
 import numpy as np 
 import cv2
+from helpers import *
 from matplotlib import pyplot as plt
 from skimage.measure import ransac
 from skimage.transform import FundamentalMatrixTransform
@@ -44,28 +45,39 @@ def matchFeatures(F1, F2):
 	pt1 = []
 	pt2 = []
 	good_matches = []
+	# o=0
 	for m in temp_matches:
 		if m.queryIdx not in pt1 and m.trainIdx not in pt2:
 			pt1.append(m.queryIdx)
 			pt2.append(m.trainIdx)
 			good_matches.append([F1.KeyPts[m.queryIdx].pt,F2.KeyPts[m.trainIdx].pt])
+			# print('o  ', o)
+			# o = o+1
 
 	# print len(good_matches), len(matches), len(idx1), len(idx2)
 	assert(len(good_matches) >= 8)
 
 	pt1 = np.array(pt1)
 	pt2 = np.array(pt2)
+
 	good_matches = np.array(good_matches)
 
-	model, inliers = ransac((good_matches[:, 0], good_matches[:, 1]),
+
+	new_good_match = transform_coordinates(good_matches)
+	print(good_matches[1,1].shape, 'good points')
+	print(new_good_match[1,0], 'aa')
+	print(good_matches[1, 0], 'bb')
+
+	model, inliers = ransac((new_good_match[:, 0], new_good_match[:, 1]),
                           	FundamentalMatrixTransform,
                           	min_samples=8,
                           	residual_threshold=0.02,
 							max_trials=100)
 
-	# print model.params
-
-	return pt1[inliers], pt2[inliers], good_matches[inliers], len(good_matches)#, fundamentalToRt(model.params)
+	print(model.params)
+	# a, b, c = np.linalg.svd(model.params) 
+	# print(b)
+	return pt1[inliers], pt2[inliers], good_matches[inliers], len(good_matches)#, Similarity(model)#, fundamentalToRt(model.params)
 
 	# matches = sorted(matches, key = lambda x:x.distance)
 	# img3 = F1.image
