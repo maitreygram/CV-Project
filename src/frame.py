@@ -57,13 +57,13 @@ def matchFeatures(F1, F2):
 	pt2 = np.array(pt2)
 	good_matches = np.array(good_matches)
 
-	print good_matches.shape
-
 	model, inliers = ransac((good_matches[:, 0], good_matches[:, 1]),
                           	FundamentalMatrixTransform,
                           	min_samples=8,
-                          	residual_threshold=1,
+                          	residual_threshold=0.02,
 							max_trials=100)
+
+	# print model.params
 
 	return pt1[inliers], pt2[inliers], good_matches[inliers], len(good_matches)#, fundamentalToRt(model.params)
 

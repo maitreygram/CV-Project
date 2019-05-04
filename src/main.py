@@ -34,7 +34,7 @@ def process_frame(frame):
 
 	return
 	
-cap = cv2.VideoCapture('../drive.mp4')  
+cap = cv2.VideoCapture('../drive2.mp4')  
 
 # KeyFrames = []
 current_frames = []
@@ -50,7 +50,7 @@ while cap.isOpened():
 
 	getFeatures(frame)
 
-	print len(current_frames)
+	# print len(current_frames)
 	if len(current_frames) > 1:
 		F1, F2, matches, numMatched = matchFeatures(current_frames[-1], current_frames[-2])
 		f = np.rot90(frame.image)
