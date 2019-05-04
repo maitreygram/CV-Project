@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 from matplotlib import pyplot as plt
 from skimage.measure import ransac
+from skimage.transform import FundamentalMatrixTransform
 
 class Frame(object):
 	"""docstring for Frame"""
@@ -16,7 +17,7 @@ def getFeatures(frame):
 	orb = cv2.ORB_create()
 
 	frame_gray = cv2.cvtColor(frame.image, cv2.COLOR_BGR2GRAY)
-	corners = cv2.goodFeaturesToTrack(frame_gray,maxCorners=300,qualityLevel=0.01,minDistance=10)
+	corners = cv2.goodFeaturesToTrack(frame_gray,maxCorners=1000,qualityLevel=0.01,minDistance=10)
 
 	KeyPts = []
 	for i in corners:
@@ -47,7 +48,7 @@ def matchFeatures(F1, F2):
 		if m.queryIdx not in pt1 and m.trainIdx not in pt2:
 			pt1.append(m.queryIdx)
 			pt2.append(m.trainIdx)
-			good_matches.append([F1.KeyPts[m.queryIdx],F2.KeyPts[m.trainIdx]])
+			good_matches.append([F1.KeyPts[m.queryIdx].pt,F2.KeyPts[m.trainIdx].pt])
 
 	# print len(good_matches), len(matches), len(idx1), len(idx2)
 	assert(len(good_matches) >= 8)
@@ -59,12 +60,12 @@ def matchFeatures(F1, F2):
 	print good_matches.shape
 
 	model, inliers = ransac((good_matches[:, 0], good_matches[:, 1]),
-                          	EssentialMatrixTransform,
+                          	FundamentalMatrixTransform,
                           	min_samples=8,
-                          	residual_threshold=RANSAC_RESIDUAL_THRES,
-							max_trials=RANSAC_MAX_TRIALS)
+                          	residual_threshold=1,
+							max_trials=100)
 
-	return pt1[inliers], pt2[inliers], len(good_matches), fundamentalToRt(model.params)
+	return pt1[inliers], pt2[inliers], good_matches[inliers], len(good_matches)#, fundamentalToRt(model.params)
 
 	# matches = sorted(matches, key = lambda x:x.distance)
 	# img3 = F1.image

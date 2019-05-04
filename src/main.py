@@ -34,7 +34,7 @@ def process_frame(frame):
 
 	return
 	
-cap = cv2.VideoCapture('../initial_key_frame.mp4')  
+cap = cv2.VideoCapture('../drive.mp4')  
 
 # KeyFrames = []
 current_frames = []
@@ -52,8 +52,23 @@ while cap.isOpened():
 
 	print len(current_frames)
 	if len(current_frames) > 1:
-		F1, F2, numMatched, R = matchFeatures(current_frames[-1], current_frames[-2])
-		exit(0)
+		F1, F2, matches, numMatched = matchFeatures(current_frames[-1], current_frames[-2])
+		f = np.rot90(frame.image)
+		disp = pygame.surfarray.make_surface(f)
+		disp = pygame.transform.flip(disp, True, False)
+		
+		for pt1, pt2 in matches:
+			u1,v1 = map(lambda x: int(round(x)), pt1)
+			u2,v2 = map(lambda x: int(round(x)), pt2)
+
+			pygame.draw.circle(disp,(255,0,0),(u1,v1),2)
+			pygame.draw.line(disp,(0,0,255),(u1,v1),(u2,v2),2)
+
+		screen.blit(disp, (0,0))
+		pygame.display.update()
+		pygame.display.flip()
+	
+		cv2.waitKey(25)
 
 	# kp = [p.pt for p in frame.KeyPts]
 	# f = np.rot90(frame.image)
