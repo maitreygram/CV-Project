@@ -31,7 +31,7 @@ def process_frame(frame):
 	
 	cv2.waitKey(25)
 
-
+	return
 	
 cap = cv2.VideoCapture('initial_key_frame.mp4')  
 frame_init = []
@@ -42,18 +42,24 @@ while cap.isOpened():
     	break
     frame_init.append(frame)
     
-    process_frame(frame)
+    #process_frame(frame)
     
 
 # When everything done, release the capture
-
+print('a')
 
 # extract ORB features
 
-# for i in range (0, len(frame_init)):
-# 	img = cv2.cvtColor(frame_init[i], cv2.COLOR_BGR2GRAY)
-# 	orb = cv2.ORB_create()
-# 	kp = orb.detect(img, None)
-# 	kp, des = orb.compute(img, kp)
+for frame in frame_init:
+	orb = cv2.ORB_create()
+	frame_1 = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+	corners = cv2.goodFeaturesToTrack(frame_1,300,0.01,10)
+	keypoint_object = []
+	for i in corners:
+	    u,v = i.ravel()
+	    keypoint_object.append(cv2.KeyPoint(u,v, _size=20))
+
+	kp, des = orb.compute(frame, keypoint_object)
+	# Extraction and 
 	
 
