@@ -1,5 +1,5 @@
 import numpy as np
-F= 1
+F= 135
 W = 500
 H = 500
 

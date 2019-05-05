@@ -3,7 +3,7 @@ import cv2
 from helpers import *
 from matplotlib import pyplot as plt
 from skimage.measure import ransac
-from skimage.transform import FundamentalMatrixTransform
+from skimage.transform import EssentialMatrixTransform
 
 class Frame(object):
 	"""docstring for Frame"""
@@ -31,6 +31,8 @@ def getFeatures(frame):
 	# frame.des = des
 	return
 
+# D_glob = []
+
 def matchFeatures(F1, F2):
 	bf = cv2.BFMatcher(cv2.NORM_HAMMING)
 	
@@ -41,7 +43,6 @@ def matchFeatures(F1, F2):
 		if m.distance < 0.75*n.distance and m.distance < 32:
 			temp_matches.append(m)
 
-
 	pt1 = []
 	pt2 = []
 	good_matches = []
@@ -51,8 +52,6 @@ def matchFeatures(F1, F2):
 			pt1.append(m.queryIdx)
 			pt2.append(m.trainIdx)
 			good_matches.append([F1.KeyPts[m.queryIdx].pt,F2.KeyPts[m.trainIdx].pt])
-			# print('o  ', o)
-			# o = o+1
 
 	# print len(good_matches), len(matches), len(idx1), len(idx2)
 	assert(len(good_matches) >= 8)
@@ -63,20 +62,26 @@ def matchFeatures(F1, F2):
 	good_matches = np.array(good_matches)
 
 
-	new_good_match = transform_coordinates(good_matches)
-	print(good_matches[1,1].shape, 'good points')
-	print(new_good_match[1,0], 'aa')
-	print(good_matches[1, 0], 'bb')
+	tx_matches = transform_coordinates(good_matches)
+	# print tx_matches[1,1].shape, 'good points'
+	# print tx_matches[1,0], 'aa'
+	# print good_matches[1, 0], 'bb'
 
-	model, inliers = ransac((new_good_match[:, 0], new_good_match[:, 1]),
-                          	FundamentalMatrixTransform,
+	model, inliers = ransac((tx_matches[:, 0], tx_matches[:, 1]),
+                          	EssentialMatrixTransform,
                           	min_samples=8,
-                          	residual_threshold=0.02,
+                          	residual_threshold=0.005,
 							max_trials=100)
 
-	print(model.params)
-	# a, b, c = np.linalg.svd(model.params) 
-	# print(b)
+	pose = Pose(model.params)
+	# U,D,V = np.linalg.svd(model.params)
+
+	# print 'U = ',np.linalg.norm(U)
+	# print 'D = ',D
+	# print 'V = ',np.linalg.norm(V)
+	# D_glob.append(D)
+	# D_med = np.median(D_glob,0)
+	# print [D[0],D[1]], '\t', [D_med[0], D_med[1]]
 	return pt1[inliers], pt2[inliers], good_matches[inliers], len(good_matches)#, Similarity(model)#, fundamentalToRt(model.params)
 
 	# matches = sorted(matches, key = lambda x:x.distance)
