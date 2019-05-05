@@ -9,7 +9,7 @@ from Display2D import *
 from Display3D import *
 import sys
 
-f2d = dim2display()
+# f2d = dim2display()
 f3d = dim3display()
 
 # pygame.init()
@@ -17,7 +17,8 @@ f3d = dim3display()
 	
 cap = cv2.VideoCapture('../drive2.mp4')  
 s = 1
-# KeyFrames = []
+
+allworldCoords = []
 current_frames = []
 while cap.isOpened():
 	
@@ -58,11 +59,16 @@ while cap.isOpened():
 
 		# print((worldCoords[:3, :]))
 
-		f2d.display2D(frame.image, matches)
-		f3d.dispAdd(current_frames)
+		# f2d.display2D(frame.image, matches)
+		if worldCoords.shape[1] > 0:
+			allworldCoords.append(worldCoords.T)
+			# print(worldCoords.T)
+		f3d.dispAdd(current_frames, allworldCoords)
 
 		print(current_frames[-1].pose)
 
+		if worldCoords.shape[1] > 0:
+			print(worldCoords[:,0])
 		# f = np.rot90(frame.image)
 		# disp = pygame.surfarray.make_surface(f)
 		# disp = pygame.transform.flip(disp, True, False)

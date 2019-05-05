@@ -8,14 +8,10 @@ import sys
 import pangolin
 import numpy as np
 from multiprocessing import Process, Queue
-# sys.path.append('/home/youknowwho/Documents/software/pangolin')
 
 
 def Cube(points):
-	# print(points.shape)
 	x,y, z = points.shape
-
-	# print(points)
 	glBegin(GL_POINTS)
 	for i in range (0, x):
 		glVertex3fv(points[i,:3,:])
@@ -43,16 +39,16 @@ class dim3display(object):
 		gl.glEnable(gl.GL_DEPTH_TEST)
 
 		self.scam = pangolin.OpenGlRenderState(
-		  	pangolin.ProjectionMatrix(w, h, 420, 420, w//2, h//2, 0.2, 10000),
-		  	pangolin.ModelViewLookAt(0, -10, -8,
-								   	0, 0, 0,
-								   	0, -1, 0))
+			pangolin.ProjectionMatrix(w, h, 420, 420, w//2, h//2, 0.2, 10000),
+			pangolin.ModelViewLookAt(0, -10, -8,
+									0, 0, 0,
+									0, -1, 0))
 		self.handler = pangolin.Handler3D(self.scam)
 
 		# Create Interactive View in window
 		self.dcam = pangolin.CreateDisplay()
 		self.dcam.SetBounds(pangolin.Attach(0), pangolin.Attach(1),
-                      pangolin.Attach(0), pangolin.Attach(1),w/h)
+					  pangolin.Attach(0), pangolin.Attach(1),w/h)
 		self.dcam.SetHandler(self.handler)
 		# hack to avoid small Pangolin, no idea why it's *2
 		self.dcam.Resize(pangolin.Viewport(0,0,w*2,h*2))
@@ -60,65 +56,57 @@ class dim3display(object):
 		# exit(0)
 
 	def viewer_refresh(self, data):
+		top = None
 		while not data.empty():
-			self.frames = data.get()
+			top = data.get()
+
+		if top is None:
+			return
+
+		self.frames = top[0]
+		self.points = top[1]
 
 		gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
 		gl.glClearColor(0.0, 0.0, 0.0, 1.0)
 		self.dcam.Activate(self.scam)
 
 		if self.frames is not None:
-	  # if self.frames[0].shape[0] >= 2:
-	  #   # draw poses
-	  #   gl.glColor3f(0.0, 1.0, 0.0)
-	  #   pangolin.DrawCameras(self.current[0][:-1])
-
-	  # if self.state[0].shape[0] >= 1:
-	  #   # draw current pose as yellow
-	  #   gl.glColor3f(1.0, 1.0, 0.0)
-	  #   pangolin.DrawCameras(self.state[0][-1:])
-
-	  # if self.state[1].shape[0] != 0:
-	  #   # draw keypoints
-	  #   gl.glPointSize(5)
-	  #   gl.glColor3f(1.0, 0.0, 0.0)
-	  #   pangolin.DrawPoints(self.state[1], self.state[2])
-
 			gl.glColor3f(0.0, 1.0, 0.0)
 			pangolin.DrawCameras(self.frames[:-1])
+
+
+		if self.points is not None and self.points.shape[0] > 0:
+			# draw keypoints
+
+			colors = np.zeros((len(self.points), 3))
+			# print(self.points.shape)
+			colors[:, 1] = 1 -self.points[:, 0] / 10.0
+			colors[:, 2] = 1 - self.points[:, 1] / 10.0
+			colors[:, 0] = 1 - self.points[:, 2] / 10.0
+
+			gl.glPointSize(2)
+			gl.glColor3f(0.0, 0.0, 1.0)
+			# pangolin.DrawPoints(self.points, colors)
+
 		pangolin.FinishFrame()
-
-	# def __init__(self):
-	# 	self.data = []
-	# 	display = (W,H)
-	# 	pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
-	# 	gluPerspective(45, (display[0]/display[1]), 0.1, 5.0)
-	# 	glTranslatef(0.0,0.0, -5)
-		
-	# def display3D(self, points):
-
-	# 	self.data.append(points)
-	# 	Cube(np.array(self.data))
-	# 	pygame.display.flip()
-	# 	pygame.time.wait(10)
-
-	# 	return
 	
-	def dispAdd(self, frames):
+	def dispAdd(self, frames, points):
 		if self.data is None:
 			return
 
 		poses = []
+		points3D = []
 		for f in frames:
 			# invert pose for display only
-			poses.append(np.linalg.inv(f.pose))      	
+			poses.append(np.linalg.inv(f.pose))
 
-		self.data.put(np.array(poses))
-  #   	poses, pts, colors = [], [], []
-  #   	for f in mapp.frames:
-  #     		# invert pose for display only
-  #     		poses.append(np.linalg.inv(f.pose))
-  #   	for p in mapp.points:
-  #     		pts.append(p.pt)
-  #     		colors.append(p.color)
-		# self.q.put((np.array(poses), np.array(pts), np.array(colors)/256.0))
+		for ptset in points:
+			for pt in ptset:
+				points3D.append(pt[:3])
+
+
+		# print(points.shape)
+		# for pt in points:
+
+		# print(np.array(points3D).shape)
+		self.data.put((np.array(poses), np.array(points3D)))
