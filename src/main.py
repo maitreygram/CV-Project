@@ -9,7 +9,7 @@ from constants import *
 pygame.init()
 screen = pygame.display.set_mode([W,H])
 	
-cap = cv2.VideoCapture('../drive2.mp4')  
+cap = cv2.VideoCapture('../drive.mp4')  
 
 # KeyFrames = []
 current_frames = []
@@ -30,16 +30,21 @@ while cap.isOpened():
 		features1, features2, pose, matches, numMatched = matchFeatures(current_frames[-1], current_frames[-2])
 		current_frames[-1].pose = np.matmul(pose, current_frames[-2].pose)
 		
-		worldCoords = cv2.triangulatePoints(I44[:3], pose[:3], features1.T, features2.T)
+		worldCoords = cv2.triangulatePoints(current_frames[-2].pose[:3], current_frames[-1].pose[:3], features1.T, features2.T)
 
 		# print(worldCoords)
 		# nice_worldCoords
-		print(current_frames[-1].pose[2,3])
+		# print(current_frames[-1].pose[2,3])
 		# print(np.linalg.det(current_frames[-1].pose[:3,:3]))
-		worldCoords = worldCoords[:,(np.abs(worldCoords[3,:]) > 0.005) & (worldCoords[2,:] > 0)]
-		worldCoords /= worldCoords[3,:]
+		worldCoords = np.array(worldCoords[:,(np.abs(worldCoords[3,:]) > 0.00005) & (worldCoords[2,:] > 0)])
+
+		if worldCoords.shape[1] > 0:
+			worldCoords /= worldCoords[3,:]
+			print(worldCoords[0,0], '\t', worldCoords[1,0], '\t', worldCoords[2,0], '\t', worldCoords[3,0])
 		# print("numMatched \n", numMatched)
-		# print(pose)
+		# print(current_frames[-1].pose[:3,3])
+
+		# print("pose", pose)
 		# exit(0)
 
 		f = np.rot90(frame.image)

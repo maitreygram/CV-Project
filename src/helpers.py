@@ -27,7 +27,7 @@ def Pose(Essential_matrix):
 	# Rotation matrix
 	W = np.array([[0,-1,0],[1,0,0],[0,0,1]])
 	# Skew symmetric matrix
-	Z = np.array([[0,1,0],[-1,0,0],[0,0,0]])
+	# Z = np.array([[0,1,0],[-1,0,0],[0,0,0]])
 
 	U, sigma, V = np.linalg.svd(Essential_matrix)
 
@@ -39,10 +39,10 @@ def Pose(Essential_matrix):
 	# if np.linalg.det(np.matmul(U, V)) == -1:
 	# 	V[:, V.shape[1]-1] = V[:, V.shape[1]-1] * -1
 
-	S1 = np.matmul(U,np.matmul(Z,U.T))
+	# S1 = np.matmul(U,np.matmul(Z,U.T))
 	R1 = np.matmul(U,np.matmul(W,V))
 
-	S2 = np.matmul(-U,np.matmul(Z,U.T))
+	# S2 = np.matmul(-U,np.matmul(Z,U.T))
 
 	if(np.trace(R1) < 0):
 		R1 = np.matmul(U, np.matmul(W.T,V))
