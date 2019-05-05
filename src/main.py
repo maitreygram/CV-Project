@@ -28,15 +28,16 @@ while cap.isOpened():
 	# print len(current_frames)
 	if len(current_frames) > 1:
 		features1, features2, pose, matches, numMatched = matchFeatures(current_frames[-1], current_frames[-2])
+		current_frames[-1].pose = np.matmul(pose, current_frames[-2].pose)
 		
 		worldCoords = cv2.triangulatePoints(I44[:3], pose[:3], features1.T, features2.T)
-		current_frames[-1].pose = np.matmul(pose, current_frames[-2].pose)
 
 		# print(worldCoords)
 		# nice_worldCoords
-		# print(current_frames[-1].pose)
+		print(current_frames[-1].pose[2,3])
 		# print(np.linalg.det(current_frames[-1].pose[:3,:3]))
-		print(worldCoords[:,np.abs(worldCoords[3,:]) > 0.005].shape)
+		worldCoords = worldCoords[:,(np.abs(worldCoords[3,:]) > 0.005) & (worldCoords[2,:] > 0)]
+		worldCoords /= worldCoords[3,:]
 		# print("numMatched \n", numMatched)
 		# print(pose)
 		# exit(0)
