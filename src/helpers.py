@@ -11,16 +11,17 @@ def Pose(H):
 		U *= -1.0
 	if np.linalg.det(V) < 0:
 		V *= -1.0
-	R = np.dot(np.dot(U, W), V)
-	if np.sum(R.diagnol() < 0):
-		R = np.dot(np.dot(U, W.T), V)
+	R = np.matmul(np.matmul(U, W), V)
+	if np.trace(R) < 0:
+		R = np.matmul(np.matmul(U, W.T), V)
+
 	t = U[:,2]
-	if t[2]<0:
+	if t[2] < 0:
 		t *= -1
-	similarity = np.eye(4)
-	similarity[:3, :3] = R
-	similarity[:3, 3] = t
-	return similarity
+	Pose = np.eye(4)
+	Pose[:3, :3] = R
+	Pose[:3, 3] = t
+	return Pose
 
 def transform_coordinates(pt):
 	ret = []
@@ -36,5 +37,3 @@ def transform_coordinates(pt):
 	# print 'pt', pt[0]
 	# print 'ret', ret[0]
 	return ret
-
-

@@ -74,15 +74,16 @@ def matchFeatures(F1, F2):
 							max_trials=100)
 
 	pose = Pose(model.params)
+	# print pose
 	# U,D,V = np.linalg.svd(model.params)
 
 	# print 'U = ',np.linalg.norm(U)
 	# print 'D = ',D
-	# print 'V = ',np.linalg.norm(V)
+	# print 'V = ',np.linalg.norm(V), '\n'
 	# D_glob.append(D)
 	# D_med = np.median(D_glob,0)
 	# print [D[0],D[1]], '\t', [D_med[0], D_med[1]]
-	return pt1[inliers], pt2[inliers], good_matches[inliers], len(good_matches)#, Similarity(model)#, fundamentalToRt(model.params)
+	return pose, good_matches[inliers], len(good_matches)#, Similarity(model)#, fundamentalToRt(model.params)
 
 	# matches = sorted(matches, key = lambda x:x.distance)
 	# img3 = F1.image
