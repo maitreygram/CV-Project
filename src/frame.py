@@ -13,12 +13,13 @@ class Frame(object):
 		(self.X, self.Y, self.Z) = frame.shape
 		self.KeyPts = None
 		self.des = None
+		self.pose = np.eye(4)
 
 def getFeatures(frame):
 	orb = cv2.ORB_create()
 
 	frame_gray = cv2.cvtColor(frame.image, cv2.COLOR_BGR2GRAY)
-	corners = cv2.goodFeaturesToTrack(frame_gray,maxCorners=1000,qualityLevel=0.01,minDistance=10)
+	corners = cv2.goodFeaturesToTrack(frame_gray,maxCorners=2000,qualityLevel=0.01,minDistance=10)
 
 	KeyPts = []
 	for i in corners:
@@ -74,6 +75,7 @@ def matchFeatures(F1, F2):
 							max_trials=100)
 
 	pose = Pose(model.params)
+	
 	# print pose
 	# U,D,V = np.linalg.svd(model.params)
 
@@ -83,16 +85,4 @@ def matchFeatures(F1, F2):
 	# D_glob.append(D)
 	# D_med = np.median(D_glob,0)
 	# print [D[0],D[1]], '\t', [D_med[0], D_med[1]]
-	return pose, good_matches[inliers], len(good_matches)#, Similarity(model)#, fundamentalToRt(model.params)
-
-	# matches = sorted(matches, key = lambda x:x.distance)
-	# img3 = F1.image
-
-	# for m,n in matches:
-	# 	print i, m.distance, n.distance
-	# 	i = i + 1
-
-	# cv2.drawMatches(F1.image,F1.KeyPts,F2.image,F2.KeyPts,matches[:10], outImg=img3, flags=2)
-	# plt.imshow(img3),plt.show()
-	# cv2.waitKey(0)
-	return
+	return np.array(tx_matches[inliers,0]), np.array(tx_matches[inliers,1]), pose, good_matches[inliers], len(good_matches)
