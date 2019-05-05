@@ -7,15 +7,15 @@ from frame import *
 from constants import *
 from Display2D import *
 from Display3D import *
+import sys
 
-
-# f2d = dim2display()
+f2d = dim2display()
 f3d = dim3display()
 
 # pygame.init()
 # screen = pygame.display.set_mode([W,H])
 	
-cap = cv2.VideoCapture('drive.mp4')  
+cap = cv2.VideoCapture('../drive2.mp4')  
 s = 1
 # KeyFrames = []
 current_frames = []
@@ -30,8 +30,6 @@ while cap.isOpened():
 	current_frames.append(frame)
 
 	getFeatures(frame)
-	
-
 
 	# print len(current_frames)
 	if len(current_frames) > 1:
@@ -47,20 +45,23 @@ while cap.isOpened():
 		# print(worldCoords[:,np.abs(worldCoords[3,:]) > 0.005].shape)
 		# worldCoords = worldCoords[:,np.abs(worldCoords[3,:]) > 0.005]
 		
-		worldCoords = np.array(worldCoords[:,(np.abs(worldCoords[3,:]) > 0.00005) & (worldCoords[2,:] > 0)])
+		worldCoords = np.array(worldCoords[:,(np.abs(worldCoords[3,:]) > 0.0005) & (worldCoords[2,:] > 0)])
+		# A = np.dot(current_frames[-1].pose, np.array([0, 0, 0,1]).T)*0.01
 
 		if worldCoords.shape[1] > 0:
 			worldCoords /= worldCoords[3,:]
-			print(worldCoords[0,0], '\t', worldCoords[1,0], '\t', worldCoords[2,0], '\t', worldCoords[3,0])
+			# print(worldCoords[0,0], '\t', worldCoords[1,0], '\t', worldCoords[2,0], '\t', worldCoords[3,0])
 
 		# print("numMatched \n", numMatched)
 		# print(pose)
 		# exit(0)
 
-		print((worldCoords[:3, :]))
+		# print((worldCoords[:3, :]))
 
-		# f2d.display2D(frame.image, matches)
-		f3d.display3D(worldCoords[:3, :])
+		f2d.display2D(frame.image, matches)
+		f3d.dispAdd(current_frames)
+
+		print(current_frames[-1].pose)
 
 		# f = np.rot90(frame.image)
 		# disp = pygame.surfarray.make_surface(f)

@@ -71,7 +71,7 @@ def matchFeatures(F1, F2):
 	model, inliers = ransac((tx_matches[:, 0], tx_matches[:, 1]),
                           	EssentialMatrixTransform,
                           	min_samples=8,
-                          	residual_threshold=0.005,
+                          	residual_threshold=0.05,
 							max_trials=100)
 
 	pose = Pose(model.params)
