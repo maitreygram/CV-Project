@@ -17,28 +17,41 @@ We used the feature trackers present in the opencv library (goodFeaturestotrack 
 **2.** Feature Matching
 We calculate the distance between all the two points using brute force approach. We estimate the 2 nearest neighbour of every point using knn clustering and eliminate the points/pairs using ratio test. In the next step, we estimate the essential matrix using 8 point algorithm. For that we convert the image coordinates to camera cordinates and check for a minimum of 8 feature points. We eliminate the outliers using thresholding and ransac.       
 
-pose estimation
+**3.** Pose estimation
 We estimate the pose of the current frame using the Essential matrix. See references[2].
+**4** World coordinates
 
-World coordinates
+**5.1** Display2D 
+We used pygame and openGL to display the feature points and their mappings across frames.
 
-Displaylowe's a
+**5.2** Display3D
+We use pangolin to display a 3D map of the camera poses and world coordinates of the feature points.
 
 ## Dataset
 Driving stock video
 
 ## list of code dependencies
-- opencv
-- openGL
-- pygame
-- pangolin
-- multiprocessing
-- matplotlib
-- numpy
-- skimage
-for python3 
+[opencv](https://docs.opencv.org/3.4/d2/de6/tutorial_py_setup_in_ubuntu.html)
+[openGL](https://www.wikihow.com/Install-Mesa-(OpenGL)-on-Linux-Mint)
+[pygame](https://askubuntu.com/questions/399824/how-to-install-pygame)
+[pangolin](https://github.com/uoip/pangolin)
+[another link for pangolin, this has fewer modules](https://github.com/stevenlovegrove/Pangolin)
+[multiprocessing](https://stackoverflow.com/questions/43752560/install-multiprocessing-python3)
+[matplotlib](https://matplotlib.org/faq/installing_faq.html)
+[numpy](https://askubuntu.com/questions/868599/how-to-install-scipy-and-numpy-on-ubuntu-16-04)
+[skimage](https://scikit-image.org/docs/dev/install.html)
 
-## How to run the code
+The code is in Python3
+
+## Detailed instructions
+
+### Installations
+See the respective links in code dependencies
+
+### Run
+```
+python3 main.py
+```
 
 ## Results
 
@@ -47,92 +60,5 @@ for python3
 ##installation instructions and run main.py
 
 ## References
-
-
-
-## Objective
-**1.** Feature based
-sparse slam'
-3d map construction
-monocular slam
-
-### We present an algorithm to recover 3D trajectory of a camera using feature based sparse slam. We implement monocular slam for    
-
-##  Method of Approach
-# CV-Project
-
-## Objective
-**1.** Feature based
-sparse slam'
-3d map construction
-monocular slam
-
-### We present an algorithm to recover 3D trajectory of a camera using feature based sparse slam. We implement monocular slam for    
-
-##  Method of Approach
-**1. 
-feature extraction
-feature matching
-pose estimation
-World coordinates
-Display
-
-## Dataset
-Driving stock video
-
-## list of code dependencies
-- opencv
-- openGL
-- pygame
-- pangolin
-- multiprocessing
-- matplotlib
-- numpy
-- skimage
-for python3 
-
-## How to run the code
-
-## Results
-
-## Discussions
-
-##installation instructions and run main.py
-
-## References
-
-
-
-
-feature extraction
-feature matching
-pose estimation
-World coordinates
-Display
-
-## Dataset
-Driving stock video
-
-## list of code dependencies
-- opencv
-- openGL
-- pygame
-- pangolin
-- multiprocessing
-- matplotlib
-- numpy
-- skimage
-for python3 
-
-## How to run the code
-
-## Results
-
-## Discussions
-
-##installation instructions and run main.py
-
-## References
-
 
 
