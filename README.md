@@ -24,15 +24,15 @@ We use pangolin to display a 3D map of the camera poses and world coordinates of
 Driving stock video
 
 ## list of code dependencies
-[opencv](https://docs.opencv.org/3.4/d2/de6/tutorial_py_setup_in_ubuntu.html)
-[openGL](https://www.wikihow.com/Install-Mesa-(OpenGL)-on-Linux-Mint)
-[pygame](https://askubuntu.com/questions/399824/how-to-install-pygame)
-[pangolin](https://github.com/uoip/pangolin)
-[another link for pangolin, this has fewer modules](https://github.com/stevenlovegrove/Pangolin)
-[multiprocessing](https://stackoverflow.com/questions/43752560/install-multiprocessing-python3)
-[matplotlib](https://matplotlib.org/faq/installing_faq.html)
-[numpy](https://askubuntu.com/questions/868599/how-to-install-scipy-and-numpy-on-ubuntu-16-04)
-[skimage](https://scikit-image.org/docs/dev/install.html)
+- [opencv](https://docs.opencv.org/3.4/d2/de6/tutorial_py_setup_in_ubuntu.html)
+- [openGL](https://www.wikihow.com/Install-Mesa-(OpenGL)-on-Linux-Mint)
+- [pygame](https://askubuntu.com/questions/399824/how-to-install-pygame)
+- [pangolin](https://github.com/uoip/pangolin)
+- [another link for pangolin, this has fewer modules](https://github.com/stevenlovegrove/Pangolin)
+- [multiprocessing](https://stackoverflow.com/questions/43752560/install-multiprocessing-python3)
+- [matplotlib](https://matplotlib.org/faq/installing_faq.html)
+- [numpy](https://askubuntu.com/questions/868599/how-to-install-scipy-and-numpy-on-ubuntu-16-04)
+- [skimage](https://scikit-image.org/docs/dev/install.html)
 
 The code is in Python3
 
