@@ -1,12 +1,37 @@
 # CV-Project
 
-## Video Logs (Update as you watch video)
-**1.** 0:46 => Extracting each frame from the video using CV2 library. Then just to display the image (each frame of the video), made a class "Display". This class contains a function "paint" that actually displays the image. Then just called this function for each frame of the video.
+## Objective
+**1.** Feature based
+sparse slam'
+3d map construction
+monocular slam
 
-**2.** 0.46:1.05 => Extraction of features. Then starts to metch feature points.
+### We present an algorithm to recover 3D trajectory of a camera using feature based sparse slam. We implement monocular slam for    
 
-**3.** 1.05:1.30 => Matches feature points across frames.
+##  Method of Approach
+feature extraction
+feature matching
+pose estimation
+World coordinates
+Display
 
-## Work done (amount of code written and its status)
+## Dataset
+Driving stock video
 
-## Other stuff (Work to be done, some issues or anything else)
+## list of code dependencies
+opencv
+openGL
+pygame
+pangolin
+multiprocessing
+matplotlib
+numpy
+skimage
+for python3 
+
+## Discussions
+
+##installation instructions and run main.py
+
+## References
+
