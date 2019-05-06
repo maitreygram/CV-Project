@@ -12,7 +12,9 @@ We calculate the distance between all the two points using brute force approach.
 
 **3.** Pose estimation
 We estimate the pose of the current frame using the Essential matrix. See references[2].
+
 **4** World coordinates
+Provides the world coordinate by using 2 projection matrices as input using triangulation.
 
 **5.1** Display2D 
 We used pygame and openGL to display the feature points and their mappings across frames.
