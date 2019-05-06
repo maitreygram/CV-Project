@@ -48,10 +48,8 @@ python3 main.py
 
 ## Results
 
-## Discussions
-
-##installation instructions and run main.py
-
 ## References
+- A nice [gitgub repository](https://github.com/geohot/twitchslam) that has the implementation of monocular slam and a [youtube video](https://www.youtube.com/watch?v=7Hlb8YX2-W8&t=3022s&fbclid=IwAR03PKJjRhdYJNToQuG85p_t-NEvMCS-KuJ0ScR6q0I49SmKS40wzb48RIc) explaining the code by the same guy. 
 
+- A [paper](http://www.maths.lth.se/matematiklth/personal/calle/datorseende13/notes/forelas6.pdf) describing the computation of rotation matrix and translation vector from Essential matrix.
 
