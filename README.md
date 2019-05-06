@@ -11,7 +11,7 @@ monocular slam
 ### We present an algorithm to recover 3D trajectory of a camera using feature based sparse slam using a single camera (also called MonoSLAM).     
 
 ##  Method of Approach
-**1. 
+1** Feature extraction 
 feature extraction
 feature matching
 pose estimation
