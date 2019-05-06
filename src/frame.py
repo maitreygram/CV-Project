@@ -16,6 +16,7 @@ class Frame(object):
 		self.pose = np.eye(4)
 
 def getFeatures(frame):
+	# Extract good features to track
 	orb = cv2.ORB_create()
 
 	frame_gray = cv2.cvtColor(frame.image, cv2.COLOR_BGR2GRAY)
@@ -26,19 +27,17 @@ def getFeatures(frame):
 		u,v = i.ravel()
 		KeyPts.append(cv2.KeyPoint(u,v, _size=20))
 	
-	frame.KeyPts, frame.des = orb.compute(frame.image, KeyPts)
-
-	# frame.KeyPts = [kp.pt for kp in KeyPts]
-	# frame.des = des
+	frame.KeyPts, frame.des = orb.compute(frame.image, KeyPts) # extract descriptor
 	return
 
 # D_glob = []
 
 def matchFeatures(F1, F2):
+	# Match features
 	bf = cv2.BFMatcher(cv2.NORM_HAMMING)
-	
 	matches = bf.knnMatch(F1.des,F2.des, k=2)
-
+	
+	# filter matches by lowe's ratio test
 	temp_matches = []
 	for m,n in matches:
 		if m.distance < 0.75*n.distance and m.distance < 32:
@@ -47,14 +46,13 @@ def matchFeatures(F1, F2):
 	pt1 = []
 	pt2 = []
 	good_matches = []
-	# o=0
 	for m in temp_matches:
 		if m.queryIdx not in pt1 and m.trainIdx not in pt2:
 			pt1.append(m.queryIdx)
 			pt2.append(m.trainIdx)
 			good_matches.append([F1.KeyPts[m.queryIdx].pt,F2.KeyPts[m.trainIdx].pt])
 
-	# print len(good_matches), len(matches), len(idx1), len(idx2)
+	#presence of atleast 8 points for 8 point algorithm
 	assert(len(good_matches) >= 8)
 
 	pt1 = np.array(pt1)
@@ -62,20 +60,19 @@ def matchFeatures(F1, F2):
 
 	good_matches = np.array(good_matches)
 
-
+	# Transform to camera coordinates for essential matrix calculation
 	tx_matches = transform_coordinates(good_matches)
-	# print tx_matches[1,1].shape, 'good points'
-	# print tx_matches[1,0], 'aa'
-	# print good_matches[1, 0], 'bb'
 
+	# Calculate essential matrix and inliers
 	model, inliers = ransac((tx_matches[:, 0], tx_matches[:, 1]),
                           	EssentialMatrixTransform,
                           	min_samples=8,
                           	residual_threshold=0.05,
 							max_trials=100)
 
-	pose = Pose(model.params)
+	pose = Pose(model.params) 	# calculate relative pose
 	
+	# # Code useful for computing Camera intrinsics
 	# print pose
 	# U,D,V = np.linalg.svd(model.params)
 

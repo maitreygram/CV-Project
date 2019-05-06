@@ -9,17 +9,8 @@ import pangolin
 import numpy as np
 from multiprocessing import Process, Queue
 
-
-def Cube(points):
-	x,y, z = points.shape
-	glBegin(GL_POINTS)
-	for i in range (0, x):
-		glVertex3fv(points[i,:3,:])
-		print(points[i,:3,:])
-	glEnd()
-
 class dim3display(object):
-
+	"""display 3D objects"""
 	def __init__(self):
 		super(dim3display, self).__init__()
 		self.frames = None
@@ -29,11 +20,13 @@ class dim3display(object):
 		self.vp.daemon = True
 		self.vp.start()
 
+	# a parallel thread to display 3D objects. multi threading avoids lag
 	def viewer_thread(self, data):
 		self.viewer_init(1024, 768)
 		while 1:
 			self.viewer_refresh(data)
 
+	# initialise viewer
 	def viewer_init(self, w, h):
 		pangolin.CreateWindowAndBind('Map Viewer', w, h)
 		gl.glEnable(gl.GL_DEPTH_TEST)
@@ -50,13 +43,13 @@ class dim3display(object):
 		self.dcam.SetBounds(pangolin.Attach(0), pangolin.Attach(1),
 					  pangolin.Attach(0), pangolin.Attach(1),w/h)
 		self.dcam.SetHandler(self.handler)
-		# hack to avoid small Pangolin, no idea why it's *2
 		self.dcam.Resize(pangolin.Viewport(0,0,w*2,h*2))
 		self.dcam.Activate()
-		# exit(0)
 
 	def viewer_refresh(self, data):
 		top = None
+		
+		# get poses
 		while not data.empty():
 			top = data.get()
 
@@ -70,22 +63,21 @@ class dim3display(object):
 		gl.glClearColor(0.0, 0.0, 0.0, 1.0)
 		self.dcam.Activate(self.scam)
 
+		# draw all poses
 		if self.frames is not None:
 			gl.glColor3f(0.0, 1.0, 0.0)
 			pangolin.DrawCameras(self.frames[:-1])
 
-
+		# draw world coordinates
 		if self.points is not None and self.points.shape[0] > 0:
-			# draw keypoints
-
 			colors = np.zeros((len(self.points), 3))
-			# print(self.points.shape)
 			colors[:, 1] = 1 -self.points[:, 0] / 10.0
 			colors[:, 2] = 1 - self.points[:, 1] / 10.0
 			colors[:, 0] = 1 - self.points[:, 2] / 10.0
 
 			gl.glPointSize(2)
 			gl.glColor3f(0.0, 0.0, 1.0)
+			# # uncomment to draw points
 			# pangolin.DrawPoints(self.points, colors)
 
 		pangolin.FinishFrame()
@@ -94,6 +86,7 @@ class dim3display(object):
 		if self.data is None:
 			return
 
+		# add points and poses to be displayed
 		poses = []
 		points3D = []
 		for f in frames:
@@ -104,9 +97,5 @@ class dim3display(object):
 			for pt in ptset:
 				points3D.append(pt[:3])
 
-
-		# print(points.shape)
-		# for pt in points:
-
-		# print(np.array(points3D).shape)
+		# add to queue
 		self.data.put((np.array(poses), np.array(points3D)))

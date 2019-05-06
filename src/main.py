@@ -1,6 +1,5 @@
 import numpy as np 
 import cv2
-#import g2o
 from matplotlib import pyplot as plt
 import pygame
 from frame import *
@@ -9,12 +8,13 @@ from Display2D import *
 from Display3D import *
 import sys
 
-# f2d = dim2display()
+# initialising displays
+f2d = dim2display()
 f3d = dim3display()
 
 # pygame.init()
 # screen = pygame.display.set_mode([W,H])
-	
+# capture video	
 cap = cv2.VideoCapture('../drive2.mp4')  
 s = 1
 
@@ -26,79 +26,34 @@ while cap.isOpened():
 	if (ret == False):
 		break
 
-	frame = cv2.resize(frame, (W, H))
+	frame = cv2.resize(frame, (W, H))	
 	frame = Frame(frame)
-	current_frames.append(frame)
+	current_frames.append(frame)	#list of all frames
 
-	getFeatures(frame)
+	getFeatures(frame)	# Extract features from image
 
-	# print len(current_frames)
 	if len(current_frames) > 1:
+		# match features from the previous frame
 		features1, features2, pose, matches, numMatched = matchFeatures(current_frames[-1], current_frames[-2])
 		
-		worldCoords = cv2.triangulatePoints(I44[:3], pose[:3], features1.T, features2.T)
+		# propogate pose from the initial frame
 		current_frames[-1].pose = np.matmul(pose, current_frames[-2].pose)
-
-		# print(worldCoords)
-		# nice_worldCoords
-		# print(current_frames[-1].pose)
-		# print(np.linalg.det(current_frames[-1].pose[:3,:3]))
-		# print(worldCoords[:,np.abs(worldCoords[3,:]) > 0.005].shape)
-		# worldCoords = worldCoords[:,np.abs(worldCoords[3,:]) > 0.005]
 		
+		# get 3D world coordinates
+		worldCoords = cv2.triangulatePoints(I44[:3], pose[:3], features1.T, features2.T)
+
+		#Filter World coordinates 
 		worldCoords = np.array(worldCoords[:,(np.abs(worldCoords[3,:]) > 0.0005) & (worldCoords[2,:] > 0)])
-		# A = np.dot(current_frames[-1].pose, np.array([0, 0, 0,1]).T)*0.01
 
 		if worldCoords.shape[1] > 0:
 			worldCoords /= worldCoords[3,:]
-			# print(worldCoords[0,0], '\t', worldCoords[1,0], '\t', worldCoords[2,0], '\t', worldCoords[3,0])
-
-		# print("numMatched \n", numMatched)
-		# print(pose)
-		# exit(0)
-
-		# print((worldCoords[:3, :]))
-
-		# f2d.display2D(frame.image, matches)
-		if worldCoords.shape[1] > 0:
 			allworldCoords.append(worldCoords.T)
-			# print(worldCoords.T)
+
+		# Display 2D points and 3D Map
 		f3d.dispAdd(current_frames, allworldCoords)
+		f2d.display2D(frame.image, matches)
 
 		print(current_frames[-1].pose)
 
 		if worldCoords.shape[1] > 0:
 			print(worldCoords[:,0])
-		# f = np.rot90(frame.image)
-		# disp = pygame.surfarray.make_surface(f)
-		# disp = pygame.transform.flip(disp, True, False)
-		
-		# for pt1, pt2 in matches:
-		# 	u1,v1 = map(lambda x: int(round(x)), pt1)
-		# 	u2,v2 = map(lambda x: int(round(x)), pt2)
-
-		# 	pygame.draw.circle(disp,(255,0,0),(u1,v1),2)
-		# 	pygame.draw.line(disp,(0,0,255),(u1,v1),(u2,v2),2)
-
-		# screen.blit(disp, (0,0))
-		# pygame.display.update()
-		# pygame.display.flip()
-	
-		# cv2.waitKey(25)
-
-	# kp = [p.pt for p in frame.KeyPts]
-	# f = np.rot90(frame.image)
-	# corners = kp
-	# corners = np.int0(corners)
-
-	# disp = pygame.surfarray.make_surface(f)
-	# disp = pygame.transform.flip(disp, True, False)
-	# for i in corners:
-	# 	x,y = i.ravel()
-	# 	pygame.draw.circle(disp,(255,0,0),(x,y),2)
-
-	# screen.blit(disp, (0,0))
-	# pygame.display.update()
-	# pygame.display.flip()
-	
-	# cv2.waitKey(25)
