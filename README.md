@@ -19,14 +19,14 @@ Display
 Driving stock video
 
 ## list of code dependencies
-opencv
-openGL
-pygame
-pangolin
-multiprocessing
-matplotlib
-numpy
-skimage
+- opencv
+- openGL
+- pygame
+- pangolin
+- multiprocessing
+- matplotlib
+- numpy
+- skimage
 for python3 
 
 ## How to run the code
