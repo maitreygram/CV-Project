@@ -29,9 +29,15 @@ numpy
 skimage
 for python3 
 
+## How to run the code
+
+## Results
+
 ## Discussions
 
 ##installation instructions and run main.py
 
 ## References
+
+
 
