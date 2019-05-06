@@ -1,13 +1,6 @@
 # CV-Project
 
-# CV-Project
-
 ## Objective
-**1.** Feature based
-sparse slam'
-3d map construction
-monocular slam
-
 ### We present an algorithm to recover 3D trajectory of a camera using feature based sparse slam using a single camera (also called MonoSLAM).     
 
 ##  Method of Approach
