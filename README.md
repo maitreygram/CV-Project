@@ -53,3 +53,4 @@ python3 main.py
 
 - A [paper](http://www.maths.lth.se/matematiklth/personal/calle/datorseende13/notes/forelas6.pdf) describing the computation of rotation matrix and translation vector from Essential matrix.
 
+- References for all libraries used are provided in code dependencies.
